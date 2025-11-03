@@ -28,18 +28,7 @@ class AuthController extends GetxController {
     try {
       AuthResponse res = await _authService.register(email, password);
       if (res.success) {
-        // Navigasi dulu ke login
-        Get.offAllNamed('/login');
-
-        await Future.delayed(const Duration(milliseconds: 300));
-
-        CustomSnackbar.show(
-          title: 'Berhasil',
-          message: 'Akun berhasil dibuat',
-          durationSeconds: 3,
-          backgroundColor: AppColors.borGreen,
-          icon: Icons.check_circle_rounded,
-        );
+        Get.offAllNamed('/login', arguments: {'registered': true});
       } else {
         if (onError != null) onError();
         CustomSnackbar.show(

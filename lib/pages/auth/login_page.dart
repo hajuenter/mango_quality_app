@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../widgets/custom_snackbar.dart';
 
 import '../../config/colors.dart';
 import '../../controllers/auth_controller.dart';
@@ -23,6 +24,19 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = Get.arguments;
+      if (args != null && args['registered'] == true) {
+        CustomSnackbar.show(
+          title: 'Berhasil',
+          message: 'Akun berhasil dibuat',
+          durationSeconds: 3,
+          backgroundColor: AppColors.borGreen,
+          icon: Icons.check_circle_rounded,
+        );
+      }
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).unfocus();
