@@ -4,6 +4,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../config/colors.dart';
 import '../../controllers/healthy_rotten_count_controller.dart';
+import '../../controllers/mango_latest_controller.dart';
 import '../../widgets/dashboard_card.dart';
 import '../../controllers/nav_controller.dart';
 import '../../widgets/realtime_activity_card.dart';
@@ -20,6 +21,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage>
     with WidgetsBindingObserver {
   late final HealthyRottenCountController controller;
+  late final MangoLatestController latestController;
   late final NavController navController;
   Worker? _navWorker;
 
@@ -28,13 +30,16 @@ class _DashboardPageState extends State<DashboardPage>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     controller = Get.put(HealthyRottenCountController());
+    latestController = Get.put(MangoLatestController());
     navController = Get.find<NavController>();
 
     _navWorker = ever(navController.currentIndex, (index) {
       if (index == 0) {
         controller.resumePolling();
+        latestController.resumePolling();
       } else {
         controller.pausePolling();
+        latestController.pausePolling();
       }
     });
   }
@@ -44,7 +49,9 @@ class _DashboardPageState extends State<DashboardPage>
     WidgetsBinding.instance.removeObserver(this);
     _navWorker?.dispose();
     controller.pausePolling();
+    latestController.pausePolling();
     Get.delete<HealthyRottenCountController>(force: true);
+    Get.delete<MangoLatestController>(force: true);
     super.dispose();
   }
 
@@ -54,13 +61,18 @@ class _DashboardPageState extends State<DashboardPage>
     if (state == AppLifecycleState.resumed &&
         navController.currentIndex.value == 0) {
       controller.resumePolling();
+      latestController.resumePolling();
     } else if (state == AppLifecycleState.paused) {
       controller.pausePolling();
+      latestController.pausePolling();
     }
   }
 
   Future<void> _refreshData() async {
-    await controller.fetchDetectionsWithDelay();
+    await Future.wait([
+      controller.fetchDetectionsWithDelay(),
+      latestController.fetchLatestDetectionsWithDelay(),
+    ]);
   }
 
   @override
@@ -230,7 +242,11 @@ class _DashboardPageState extends State<DashboardPage>
                                 ),
                                 const SizedBox(height: 6),
                                 Obx(() {
-                                  final isLoading = controller.isLoading.value;
+                                  final isLoading =
+                                      latestController.isLoading.value;
+                                  final detections =
+                                      latestController.latestDetections;
+
                                   return isLoading
                                       ? Column(
                                           children: List.generate(
@@ -239,39 +255,26 @@ class _DashboardPageState extends State<DashboardPage>
                                                 const RealtimeActivityCardSkeleton(),
                                           ),
                                         )
+                                      : detections.isEmpty
+                                      ? const Padding(
+                                          padding: EdgeInsets.all(20),
+                                          child: Text(
+                                            'Belum ada aktivitas',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 14,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        )
                                       : Column(
-                                          children: const [
-                                            RealtimeActivityCard(
-                                              type: 'sehat',
-                                              message:
-                                                  'Mangga Sehat Terdeteksi',
-                                              time: '21/10/2025 12:23:32',
-                                            ),
-                                            RealtimeActivityCard(
-                                              type: 'sehat',
-                                              message:
-                                                  'Mangga Sehat Terdeteksi',
-                                              time: '21/10/2025 12:23:28',
-                                            ),
-                                            RealtimeActivityCard(
-                                              type: 'busuk',
-                                              message:
-                                                  'Mangga Busuk Terdeteksi',
-                                              time: '21/10/2025 12:23:19',
-                                            ),
-                                            RealtimeActivityCard(
-                                              type: 'sehat',
-                                              message:
-                                                  'Mangga Sehat Terdeteksi',
-                                              time: '21/10/2025 12:23:14',
-                                            ),
-                                            RealtimeActivityCard(
-                                              type: 'busuk',
-                                              message:
-                                                  'Mangga Busuk Terdeteksi',
-                                              time: '21/10/2025 12:23:19',
-                                            ),
-                                          ],
+                                          children: detections.map((detection) {
+                                            return RealtimeActivityCard(
+                                              type: detection.type,
+                                              message: detection.message,
+                                              time: detection.formattedTime,
+                                            );
+                                          }).toList(),
                                         );
                                 }),
                               ],
