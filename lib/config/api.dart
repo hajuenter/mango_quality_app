@@ -1,0 +1,6 @@
+class ApiConfig {
+  static const String baseUrl = 'http://192.168.1.7:5000/api';
+
+  static const String healthyDetection = '$baseUrl/detections/healthy';
+  static const String rottenDetection = '$baseUrl/detections/rotten';
+}
