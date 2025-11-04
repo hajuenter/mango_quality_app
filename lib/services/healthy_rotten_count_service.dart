@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+
 import '../config/api.dart';
+import '../responses/healthy_rotten_count_response.dart';
 
 class HealthyRottenCountService {
   final Dio _dio;
@@ -14,13 +16,13 @@ class HealthyRottenCountService {
         ),
       );
 
-  Future<Map<String, dynamic>> getHealthy() async {
+  Future<HealthyRottenCountResponse> getHealthy() async {
     final response = await _dio.get(ApiConfig.healthyDetection);
-    return response.data;
+    return HealthyRottenCountResponse.fromJson(response.data);
   }
 
-  Future<Map<String, dynamic>> getRotten() async {
+  Future<HealthyRottenCountResponse> getRotten() async {
     final response = await _dio.get(ApiConfig.rottenDetection);
-    return response.data;
+    return HealthyRottenCountResponse.fromJson(response.data);
   }
 }

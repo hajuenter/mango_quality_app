@@ -3,4 +3,5 @@ class ApiConfig {
 
   static const String healthyDetection = '$baseUrl/detections/healthy';
   static const String rottenDetection = '$baseUrl/detections/rotten';
+  static const String latestDetection = '$baseUrl/detections/latest';
 }

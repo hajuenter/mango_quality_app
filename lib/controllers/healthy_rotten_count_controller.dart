@@ -14,6 +14,7 @@ class HealthyRottenCountController extends GetxController {
   Timer? _pollingTimer;
   bool _isInitialized = false;
   bool _isPageActive = true;
+
   @override
   void onInit() {
     super.onInit();
@@ -66,16 +67,11 @@ class HealthyRottenCountController extends GetxController {
     try {
       isLoading.value = true;
 
-      final healthyData = await _service!.getHealthy();
-      final rottenData = await _service!.getRotten();
+      final healthyResponse = await _service!.getHealthy();
+      final rottenResponse = await _service!.getRotten();
 
-      healthyList.value = (healthyData['detections'] as List)
-          .map((e) => HealthyRottenCountModel.fromJson(e))
-          .toList();
-
-      rottenList.value = (rottenData['detections'] as List)
-          .map((e) => HealthyRottenCountModel.fromJson(e))
-          .toList();
+      healthyList.value = healthyResponse.detections;
+      rottenList.value = rottenResponse.detections;
     } catch (e) {
       debugPrint('Error fetching detections: $e');
     } finally {
@@ -91,16 +87,11 @@ class HealthyRottenCountController extends GetxController {
 
       final startTime = DateTime.now();
 
-      final healthyData = await _service!.getHealthy();
-      final rottenData = await _service!.getRotten();
+      final healthyResponse = await _service!.getHealthy();
+      final rottenResponse = await _service!.getRotten();
 
-      healthyList.value = (healthyData['detections'] as List)
-          .map((e) => HealthyRottenCountModel.fromJson(e))
-          .toList();
-
-      rottenList.value = (rottenData['detections'] as List)
-          .map((e) => HealthyRottenCountModel.fromJson(e))
-          .toList();
+      healthyList.value = healthyResponse.detections;
+      rottenList.value = rottenResponse.detections;
 
       final elapsed = DateTime.now().difference(startTime);
       final remaining = const Duration(seconds: 3) - elapsed;
@@ -119,16 +110,11 @@ class HealthyRottenCountController extends GetxController {
     if (_service == null || !_isPageActive) return;
 
     try {
-      final healthyData = await _service!.getHealthy();
-      final rottenData = await _service!.getRotten();
+      final healthyResponse = await _service!.getHealthy();
+      final rottenResponse = await _service!.getRotten();
 
-      final newHealthyList = (healthyData['detections'] as List)
-          .map((e) => HealthyRottenCountModel.fromJson(e))
-          .toList();
-
-      final newRottenList = (rottenData['detections'] as List)
-          .map((e) => HealthyRottenCountModel.fromJson(e))
-          .toList();
+      final newHealthyList = healthyResponse.detections;
+      final newRottenList = rottenResponse.detections;
 
       if (newHealthyList.length != healthyList.length ||
           newRottenList.length != rottenList.length) {
