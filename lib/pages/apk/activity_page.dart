@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../config/colors.dart';
+import '../../controllers/mango_all_controller.dart';
+import '../../controllers/nav_controller.dart';
 import '../../widgets/date_picker_field.dart';
 import '../../widgets/filter_chips_row.dart';
 import '../../widgets/realtime_activity_card.dart';
@@ -15,80 +18,73 @@ class ActivityPage extends StatefulWidget {
   State<ActivityPage> createState() => _ActivityPageState();
 }
 
-class _ActivityPageState extends State<ActivityPage> {
+class _ActivityPageState extends State<ActivityPage>
+    with WidgetsBindingObserver {
+  late final MangoAllController controller;
+  late final NavController navController;
+  Worker? _navWorker;
+
   String selectedFilter = 'Semua';
   DateTime? selectedDate;
-
-  bool _isLoading = true; // Tambahkan loading state
-
-  final List<Map<String, dynamic>> activities = [
-    {
-      'type': 'sehat',
-      'message': 'Mangga Sehat Terdeteksi',
-      'time': '01/11/2025 08:23:12',
-    },
-    {
-      'type': 'busuk',
-      'message': 'Mangga Busuk Terdeteksi',
-      'time': '01/11/2025 08:25:45',
-    },
-    {
-      'type': 'sehat',
-      'message': 'Mangga Sehat Terdeteksi',
-      'time': '01/11/2025 08:27:03',
-    },
-    {
-      'type': 'sehat',
-      'message': 'Mangga Sehat Terdeteksi',
-      'time': '01/11/2025 08:30:22',
-    },
-    {
-      'type': 'busuk',
-      'message': 'Mangga Busuk Terdeteksi',
-      'time': '01/11/2025 08:32:10',
-    },
-    {
-      'type': 'sehat',
-      'message': 'Mangga Sehat Terdeteksi',
-      'time': '01/11/2025 08:35:05',
-    },
-    {
-      'type': 'busuk',
-      'message': 'Mangga Busuk Terdeteksi',
-      'time': '01/11/2025 08:37:18',
-    },
-  ];
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    WidgetsBinding.instance.addObserver(this);
+    controller = Get.put(MangoAllController());
+    navController = Get.find<NavController>();
+
+    _navWorker = ever(navController.currentIndex, (index) {
+      if (index == 1) {
+        controller.resumePolling();
+      } else {
+        controller.pausePolling();
+      }
+    });
   }
 
-  Future<void> _loadData() async {
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(seconds: 2)); // simulasi fetch data
-    setState(() => _isLoading = false);
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _navWorker?.dispose();
+    controller.pausePolling();
+    Get.delete<MangoAllController>(force: true);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed &&
+        navController.currentIndex.value == 1) {
+      controller.resumePolling();
+    } else if (state == AppLifecycleState.paused) {
+      controller.pausePolling();
+    }
   }
 
   Future<void> _refreshData() async {
-    await _loadData();
+    setState(() {
+      selectedFilter = 'Semua';
+      selectedDate = null;
+    });
+
+    // Aktifkan skeleton saat refresh
+    controller.isLoading.value = true;
+
+    await controller.fetchAllDetectionsWithDelay();
+
+    // Matikan skeleton setelah selesai
+    controller.isLoading.value = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    final filtered = selectedFilter == 'Semua'
-        ? activities
-        : activities
-              .where((a) => a['type'] == selectedFilter.toLowerCase())
-              .toList();
-
     return Scaffold(
       backgroundColor: AppColors.backgroundApk,
       body: SafeArea(
         child: Column(
           children: [
-            // HEADER
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -109,100 +105,111 @@ class _ActivityPageState extends State<ActivityPage> {
                 textAlign: TextAlign.center,
               ),
             ),
-
             Expanded(
               child: RefreshIndicator(
                 onRefresh: _refreshData,
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      // DATE PICKER
-                      Card(
-                        color: Colors.white,
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: _isLoading
-                              ? const DatePickerFieldSkeleton()
-                              : DatePickerField(
-                                  selectedDate: selectedDate,
-                                  onDateSelected: (date) {
-                                    setState(() => selectedDate = date);
-                                  },
-                                ),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
+                child: Obx(() {
+                  final isLoading = controller.isLoading.value;
+                  final dateFiltered = controller.filterByDate(selectedDate);
+                  final filtered = controller.filterByType(
+                    dateFiltered,
+                    selectedFilter,
+                  );
 
-                      _isLoading
-                          ? const FilterChipsRowSkeleton()
-                          : FilterChipsRow(
-                              selectedFilter: selectedFilter,
-                              onSelected: (filter) {
-                                setState(() => selectedFilter = filter);
-                              },
-                            ),
-
-                      Card(
-                        color: Colors.white,
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                children: _isLoading
-                                    ? List.generate(
-                                        selectedFilter == 'Semua'
-                                            ? (activities.isNotEmpty
-                                                  ? activities.length
-                                                  : 5)
-                                            : (activities
-                                                      .where(
-                                                        (a) =>
-                                                            a['type'] ==
-                                                            selectedFilter
-                                                                .toLowerCase(),
-                                                      )
-                                                      .isNotEmpty
-                                                  ? activities
-                                                        .where(
-                                                          (a) =>
-                                                              a['type'] ==
-                                                              selectedFilter
-                                                                  .toLowerCase(),
-                                                        )
-                                                        .length
-                                                  : 5),
-                                        (_) =>
-                                            const RealtimeActivityCardSkeleton(),
-                                      )
-                                    : filtered
-                                          .map(
-                                            (activity) => RealtimeActivityCard(
-                                              type: activity['type'],
-                                              message: activity['message'],
-                                              time: activity['time'],
-                                            ),
-                                          )
-                                          .toList(),
-                              ),
-                            ],
+                  return SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Card(
+                          color: Colors.white,
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: isLoading
+                                ? const DatePickerFieldSkeleton()
+                                : DatePickerField(
+                                    selectedDate: selectedDate,
+                                    onDateSelected: (date) {
+                                      setState(() => selectedDate = date);
+                                    },
+                                  ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                        const SizedBox(height: 6),
+                        isLoading
+                            ? const FilterChipsRowSkeleton()
+                            : FilterChipsRow(
+                                selectedFilter: selectedFilter,
+                                onSelected: (filter) {
+                                  setState(() => selectedFilter = filter);
+                                },
+                              ),
+                        Card(
+                          color: Colors.white,
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (isLoading)
+                                  Column(
+                                    children: List.generate(
+                                      controller.allDetections.isNotEmpty
+                                          ? controller.allDetections.length
+                                          : 5, // fallback agar tidak kosong banget
+                                      (_) =>
+                                          const RealtimeActivityCardSkeleton(),
+                                    ),
+                                  )
+                                else if (filtered.isEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.all(32),
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.inbox_outlined,
+                                          size: 64,
+                                          color: Colors.grey[400],
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          selectedDate != null
+                                              ? 'Tidak ada aktivitas pada tanggal ini'
+                                              : 'Belum ada aktivitas',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                else
+                                  Column(
+                                    children: filtered.map((detection) {
+                                      return RealtimeActivityCard(
+                                        type: detection.type,
+                                        message: detection.message,
+                                        time: detection.formattedTime,
+                                      );
+                                    }).toList(),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
               ),
             ),
           ],
