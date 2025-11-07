@@ -250,7 +250,13 @@ class _DashboardPageState extends State<DashboardPage>
                                   return isLoading
                                       ? Column(
                                           children: List.generate(
-                                            5,
+                                            latestController
+                                                    .latestDetections
+                                                    .isNotEmpty
+                                                ? latestController
+                                                      .latestDetections
+                                                      .length
+                                                : 5,
                                             (_) =>
                                                 const RealtimeActivityCardSkeleton(),
                                           ),
