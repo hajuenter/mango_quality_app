@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class MangoAllModel {
   final String id;
   final String label;
@@ -21,38 +23,36 @@ class MangoAllModel {
     required this.year,
   });
 
-  factory MangoAllModel.fromJson(Map<String, dynamic> json) {
+  factory MangoAllModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+
+    final timestampField = data['timestamp'];
+    DateTime parsedTimestamp;
+    if (timestampField is Timestamp) {
+      parsedTimestamp = timestampField.toDate();
+    } else if (timestampField is String) {
+      parsedTimestamp = DateTime.tryParse(timestampField) ?? DateTime.now();
+    } else {
+      parsedTimestamp = DateTime.now();
+    }
+
     return MangoAllModel(
-      id: json['id'] ?? '',
-      label: json['label'] ?? '',
-      confidence: (json['confidence'] ?? 0.0).toDouble(),
-      imageUrl: json['image_url'] ?? '',
-      method: json['method'] ?? '',
-      timestamp: DateTime.parse(
-        json['timestamp'] ?? DateTime.now().toIso8601String(),
-      ),
-      date: json['date'] ?? '',
-      month: json['month'] ?? '',
-      year: json['year'] ?? '',
+      id: doc.id,
+      label: data['label'] ?? '',
+      confidence: (data['confidence'] ?? 0.0).toDouble(),
+      imageUrl: data['image_url'] ?? '',
+      method: data['method'] ?? '',
+      timestamp: parsedTimestamp,
+      date: data['date'] ?? '',
+      month: data['month'] ?? '',
+      year: data['year'] ?? '',
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'label': label,
-      'confidence': confidence,
-      'image_url': imageUrl,
-      'method': method,
-      'timestamp': timestamp.toIso8601String(),
-      'date': date,
-      'month': month,
-      'year': year,
-    };
-  }
-
   String get formattedTime {
-    return '${date.split('-')[2]}/${date.split('-')[1]}/${date.split('-')[0]} '
+    return '${timestamp.day.toString().padLeft(2, '0')}/'
+        '${timestamp.month.toString().padLeft(2, '0')}/'
+        '${timestamp.year} '
         '${timestamp.hour.toString().padLeft(2, '0')}:'
         '${timestamp.minute.toString().padLeft(2, '0')}:'
         '${timestamp.second.toString().padLeft(2, '0')}';

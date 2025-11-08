@@ -1,28 +1,37 @@
-import 'package:dio/dio.dart';
-
-import '../config/api.dart';
-import '../responses/healthy_rotten_count_response.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/healthy_rotten_count_model.dart';
 
 class HealthyRottenCountService {
-  final Dio _dio;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  HealthyRottenCountService({String? token})
-    : _dio = Dio(
-        BaseOptions(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-        ),
-      );
+  Stream<Map<String, dynamic>> streamHealthyRottenCounts() {
+    return _firestore.collection('mango_detections').snapshots().map((
+      snapshot,
+    ) {
+      int healthyCount = 0;
+      int rottenCount = 0;
+      List<HealthyRottenCountModel> healthyList = [];
+      List<HealthyRottenCountModel> rottenList = [];
 
-  Future<HealthyRottenCountResponse> getHealthy() async {
-    final response = await _dio.get(ApiConfig.healthyDetection);
-    return HealthyRottenCountResponse.fromJson(response.data);
-  }
+      for (var doc in snapshot.docs) {
+        final model = HealthyRottenCountModel.fromFirestore(doc);
 
-  Future<HealthyRottenCountResponse> getRotten() async {
-    final response = await _dio.get(ApiConfig.rottenDetection);
-    return HealthyRottenCountResponse.fromJson(response.data);
+        if (model.label == 'mango_healthy') {
+          healthyCount++;
+          healthyList.add(model);
+        } else if (model.label == 'mango_rotten') {
+          rottenCount++;
+          rottenList.add(model);
+        }
+      }
+
+      return {
+        'healthyCount': healthyCount,
+        'rottenCount': rottenCount,
+        'healthyList': healthyList,
+        'rottenList': rottenList,
+        'totalCount': healthyCount + rottenCount,
+      };
+    });
   }
 }

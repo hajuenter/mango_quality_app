@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class MangoLatestModel {
   final String id;
   final String label;
@@ -8,6 +10,8 @@ class MangoLatestModel {
   final String date;
   final String month;
   final String year;
+  final String? seasonName;
+  final String? seasonStatus;
 
   MangoLatestModel({
     required this.id,
@@ -19,21 +23,33 @@ class MangoLatestModel {
     required this.date,
     required this.month,
     required this.year,
+    this.seasonName,
+    this.seasonStatus,
   });
 
   factory MangoLatestModel.fromJson(Map<String, dynamic> json) {
+    DateTime parsedTimestamp;
+
+    if (json['timestamp'] is Timestamp) {
+      parsedTimestamp = (json['timestamp'] as Timestamp).toDate();
+    } else if (json['timestamp'] is String) {
+      parsedTimestamp = DateTime.tryParse(json['timestamp']) ?? DateTime.now();
+    } else {
+      parsedTimestamp = DateTime.now();
+    }
+
     return MangoLatestModel(
       id: json['id'] ?? '',
       label: json['label'] ?? '',
       confidence: (json['confidence'] ?? 0.0).toDouble(),
       imageUrl: json['image_url'] ?? '',
       method: json['method'] ?? '',
-      timestamp: DateTime.parse(
-        json['timestamp'] ?? DateTime.now().toIso8601String(),
-      ),
+      timestamp: parsedTimestamp,
       date: json['date'] ?? '',
       month: json['month'] ?? '',
       year: json['year'] ?? '',
+      seasonName: json['season_name'],
+      seasonStatus: json['season_status'],
     );
   }
 
@@ -44,10 +60,12 @@ class MangoLatestModel {
       'confidence': confidence,
       'image_url': imageUrl,
       'method': method,
-      'timestamp': timestamp.toIso8601String(),
+      'timestamp': Timestamp.fromDate(timestamp),
       'date': date,
       'month': month,
       'year': year,
+      'season_name': seasonName,
+      'season_status': seasonStatus,
     };
   }
 
@@ -58,13 +76,9 @@ class MangoLatestModel {
         '${timestamp.second.toString().padLeft(2, '0')}';
   }
 
-  String get type {
-    return label.contains('healthy') ? 'sehat' : 'busuk';
-  }
+  String get type => label.contains('healthy') ? 'sehat' : 'busuk';
 
-  String get message {
-    return label.contains('healthy')
-        ? 'Mangga Sehat Terdeteksi'
-        : 'Mangga Busuk Terdeteksi';
-  }
+  String get message => label.contains('healthy')
+      ? 'Mangga Sehat Terdeteksi'
+      : 'Mangga Busuk Terdeteksi';
 }

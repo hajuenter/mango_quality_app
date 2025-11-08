@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../config/colors.dart';
 import '../../controllers/mango_all_controller.dart';
-import '../../controllers/nav_controller.dart';
 import '../../widgets/date_picker_field.dart';
 import '../../widgets/filter_chips_row.dart';
 import '../../widgets/realtime_activity_card.dart';
@@ -18,11 +17,8 @@ class ActivityPage extends StatefulWidget {
   State<ActivityPage> createState() => _ActivityPageState();
 }
 
-class _ActivityPageState extends State<ActivityPage>
-    with WidgetsBindingObserver {
+class _ActivityPageState extends State<ActivityPage> {
   late final MangoAllController controller;
-  late final NavController navController;
-  Worker? _navWorker;
 
   String selectedFilter = 'Semua';
   DateTime? selectedDate;
@@ -30,37 +26,13 @@ class _ActivityPageState extends State<ActivityPage>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     controller = Get.put(MangoAllController());
-    navController = Get.find<NavController>();
-
-    _navWorker = ever(navController.currentIndex, (index) {
-      if (index == 1) {
-        controller.resumePolling();
-      } else {
-        controller.pausePolling();
-      }
-    });
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _navWorker?.dispose();
-    controller.pausePolling();
     Get.delete<MangoAllController>(force: true);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed &&
-        navController.currentIndex.value == 1) {
-      controller.resumePolling();
-    } else if (state == AppLifecycleState.paused) {
-      controller.pausePolling();
-    }
   }
 
   Future<void> _refreshData() async {
@@ -68,14 +40,7 @@ class _ActivityPageState extends State<ActivityPage>
       selectedFilter = 'Semua';
       selectedDate = null;
     });
-
-    // Aktifkan skeleton saat refresh
-    controller.isLoading.value = true;
-
-    await controller.fetchAllDetectionsWithDelay();
-
-    // Matikan skeleton setelah selesai
-    controller.isLoading.value = false;
+    await controller.refreshWithDelay();
   }
 
   @override
@@ -85,6 +50,7 @@ class _ActivityPageState extends State<ActivityPage>
       body: SafeArea(
         child: Column(
           children: [
+            // === HEADER ===
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -105,6 +71,8 @@ class _ActivityPageState extends State<ActivityPage>
                 textAlign: TextAlign.center,
               ),
             ),
+
+            // === ISI ===
             Expanded(
               child: RefreshIndicator(
                 onRefresh: _refreshData,
@@ -121,6 +89,7 @@ class _ActivityPageState extends State<ActivityPage>
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
+                        // === Date Picker ===
                         Card(
                           color: Colors.white,
                           elevation: 3,
@@ -140,6 +109,8 @@ class _ActivityPageState extends State<ActivityPage>
                           ),
                         ),
                         const SizedBox(height: 6),
+
+                        // === Filter Chips ===
                         isLoading
                             ? const FilterChipsRowSkeleton()
                             : FilterChipsRow(
@@ -148,6 +119,8 @@ class _ActivityPageState extends State<ActivityPage>
                                   setState(() => selectedFilter = filter);
                                 },
                               ),
+
+                        // === Daftar Aktivitas ===
                         Card(
                           color: Colors.white,
                           elevation: 3,
@@ -164,7 +137,7 @@ class _ActivityPageState extends State<ActivityPage>
                                     children: List.generate(
                                       controller.allDetections.isNotEmpty
                                           ? controller.allDetections.length
-                                          : 5, // fallback agar tidak kosong banget
+                                          : 5,
                                       (_) =>
                                           const RealtimeActivityCardSkeleton(),
                                     ),

@@ -9,6 +9,9 @@ import '../routes/app_routes.dart';
 import '../services/auth_service.dart';
 import 'nav_controller.dart';
 import '../widgets/custom_snackbar.dart';
+import '../controllers/mango_all_controller.dart';
+import '../controllers/mango_latest_controller.dart';
+import '../controllers/healthy_rotten_count_controller.dart';
 
 class AuthController extends GetxController {
   final AuthService _authService;
@@ -153,7 +156,18 @@ class AuthController extends GetxController {
 
   Future<void> logout() async {
     isLoading.value = true;
+    // atau
+    // Get.deleteAll(force: true);
+    try {
+      Get.delete<MangoAllController>();
+      Get.delete<MangoLatestController>();
+      Get.delete<HealthyRottenCountController>();
+    } catch (e) {
+      debugPrint('⚠️ Gagal hapus controller: $e');
+    }
+
     await _authService.logout();
+
     isLoading.value = false;
     Get.offAllNamed('/login');
   }

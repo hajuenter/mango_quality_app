@@ -6,7 +6,6 @@ import '../../config/colors.dart';
 import '../../controllers/healthy_rotten_count_controller.dart';
 import '../../controllers/mango_latest_controller.dart';
 import '../../widgets/dashboard_card.dart';
-import '../../controllers/nav_controller.dart';
 import '../../widgets/realtime_activity_card.dart';
 import '../../widgets/skeletons/dashboard_card_skeleton.dart';
 import '../../widgets/skeletons/realtime_activity_card_skeleton.dart';
@@ -18,60 +17,28 @@ class DashboardPage extends StatefulWidget {
   State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage>
-    with WidgetsBindingObserver {
+class _DashboardPageState extends State<DashboardPage> {
   late final HealthyRottenCountController controller;
   late final MangoLatestController latestController;
-  late final NavController navController;
-  Worker? _navWorker;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     controller = Get.put(HealthyRottenCountController());
     latestController = Get.put(MangoLatestController());
-    navController = Get.find<NavController>();
-
-    _navWorker = ever(navController.currentIndex, (index) {
-      if (index == 0) {
-        controller.resumePolling();
-        latestController.resumePolling();
-      } else {
-        controller.pausePolling();
-        latestController.pausePolling();
-      }
-    });
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _navWorker?.dispose();
-    controller.pausePolling();
-    latestController.pausePolling();
     Get.delete<HealthyRottenCountController>(force: true);
     Get.delete<MangoLatestController>(force: true);
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed &&
-        navController.currentIndex.value == 0) {
-      controller.resumePolling();
-      latestController.resumePolling();
-    } else if (state == AppLifecycleState.paused) {
-      controller.pausePolling();
-      latestController.pausePolling();
-    }
-  }
-
   Future<void> _refreshData() async {
     await Future.wait([
-      controller.fetchDetectionsWithDelay(),
-      latestController.fetchLatestDetectionsWithDelay(),
+      controller.refreshWithDelay(),
+      latestController.refreshWithDelay(),
     ]);
   }
 
@@ -110,10 +77,11 @@ class _DashboardPageState extends State<DashboardPage>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // === Bagian Statistik ===
                       Obx(() {
                         final isLoading = controller.isLoading.value;
-                        final healthyCount = controller.healthyList.length;
-                        final rottenCount = controller.rottenList.length;
+                        final healthyCount = controller.healthyCount.value;
+                        final rottenCount = controller.rottenCount.value;
 
                         final key = ValueKey('$healthyCount-$rottenCount');
 
@@ -148,7 +116,6 @@ class _DashboardPageState extends State<DashboardPage>
 
                                   final cards = [
                                     DashboardCard(
-                                      key: ValueKey('healthy-$healthyCount'),
                                       imageAsset: 'assets/sehat.png',
                                       iconSize: 50,
                                       number: '$healthyCount',
@@ -157,7 +124,6 @@ class _DashboardPageState extends State<DashboardPage>
                                       label: 'Mangga Sehat',
                                     ),
                                     DashboardCard(
-                                      key: ValueKey('rotten-$rottenCount'),
                                       imageAsset: 'assets/busuk.png',
                                       iconSize: 50,
                                       number: '$rottenCount',
@@ -166,9 +132,6 @@ class _DashboardPageState extends State<DashboardPage>
                                       label: 'Mangga Busuk',
                                     ),
                                     DashboardCard(
-                                      key: ValueKey(
-                                        'total-${healthyCount + rottenCount}',
-                                      ),
                                       imageAsset: 'assets/box.png',
                                       iconSize: 50,
                                       iconColor: Colors.black,
@@ -177,7 +140,6 @@ class _DashboardPageState extends State<DashboardPage>
                                       label: 'Total di Proses',
                                     ),
                                     DashboardCard(
-                                      key: const ValueKey('status-conveyor'),
                                       imageAsset: 'assets/conveyor.png',
                                       iconSize: 50,
                                       iconColor: Colors.green,
@@ -194,6 +156,8 @@ class _DashboardPageState extends State<DashboardPage>
                           },
                         );
                       }),
+
+                      // === Bagian Real-time Activity ===
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -247,41 +211,48 @@ class _DashboardPageState extends State<DashboardPage>
                                   final detections =
                                       latestController.latestDetections;
 
-                                  return isLoading
-                                      ? Column(
-                                          children: List.generate(
-                                            latestController
-                                                    .latestDetections
-                                                    .isNotEmpty
-                                                ? latestController
-                                                      .latestDetections
-                                                      .length
-                                                : 5,
-                                            (_) =>
-                                                const RealtimeActivityCardSkeleton(),
-                                          ),
-                                        )
-                                      : detections.isEmpty
-                                      ? const Padding(
-                                          padding: EdgeInsets.all(20),
-                                          child: Text(
-                                            'Belum ada aktivitas',
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 14,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        )
-                                      : Column(
-                                          children: detections.map((detection) {
-                                            return RealtimeActivityCard(
-                                              type: detection.type,
-                                              message: detection.message,
-                                              time: detection.formattedTime,
-                                            );
-                                          }).toList(),
-                                        );
+                                  if (isLoading) {
+                                    final placeholderCount =
+                                        latestController
+                                            .latestDetections
+                                            .isNotEmpty
+                                        ? latestController
+                                              .latestDetections
+                                              .length
+                                        : 5;
+
+                                    return Column(
+                                      children: List.generate(
+                                        placeholderCount,
+                                        (_) =>
+                                            const RealtimeActivityCardSkeleton(),
+                                      ),
+                                    );
+                                  }
+
+                                  if (detections.isEmpty) {
+                                    return const Padding(
+                                      padding: EdgeInsets.all(20),
+                                      child: Text(
+                                        'Belum ada aktivitas',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 14,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    );
+                                  }
+
+                                  return Column(
+                                    children: detections.map((detection) {
+                                      return RealtimeActivityCard(
+                                        type: detection.type,
+                                        message: detection.message,
+                                        time: detection.formattedTime,
+                                      );
+                                    }).toList(),
+                                  );
                                 }),
                               ],
                             ),

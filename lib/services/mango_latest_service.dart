@@ -1,23 +1,33 @@
-import 'package:dio/dio.dart';
-
-import '../config/api.dart';
-import '../responses/mango_latest_response.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/mango_latest_model.dart';
 
 class MangoLatestService {
-  final Dio _dio;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  MangoLatestService({String? token})
-    : _dio = Dio(
-        BaseOptions(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-        ),
-      );
+  Stream<List<MangoLatestModel>> streamLatestDetections() {
+    return _firestore
+        .collection('mango_detections')
+        .orderBy('timestamp', descending: true)
+        .limit(5)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            return MangoLatestModel.fromJson({'id': doc.id, ...data});
+          }).toList();
+        });
+  }
 
-  Future<MangoLatestResponse> getLatestDetections() async {
-    final response = await _dio.get(ApiConfig.latestDetection);
-    return MangoLatestResponse.fromJson(response.data);
+  Future<List<MangoLatestModel>> fetchLatestOnce() async {
+    final snapshot = await _firestore
+        .collection('mango_detections')
+        .orderBy('timestamp', descending: true)
+        .limit(5)
+        .get();
+
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return MangoLatestModel.fromJson({'id': doc.id, ...data});
+    }).toList();
   }
 }

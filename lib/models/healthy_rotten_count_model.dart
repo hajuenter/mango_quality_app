@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class HealthyRottenCountModel {
   final String id;
   final String label;
@@ -13,13 +15,27 @@ class HealthyRottenCountModel {
     required this.timestamp,
   });
 
-  factory HealthyRottenCountModel.fromJson(Map<String, dynamic> json) {
+  factory HealthyRottenCountModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>? ?? {};
+
     return HealthyRottenCountModel(
-      id: json['id'],
-      label: json['label'],
-      imageUrl: json['image_url'],
-      confidence: (json['confidence'] as num).toDouble(),
-      timestamp: DateTime.parse(json['timestamp']),
+      id: doc.id,
+      label: data['label'] ?? '',
+      imageUrl: data['image_url'] ?? '',
+      confidence: (data['confidence'] is num)
+          ? (data['confidence'] as num).toDouble()
+          : 0.0,
+      timestamp: _parseTimestamp(data['timestamp']),
     );
+  }
+
+  static DateTime _parseTimestamp(dynamic value) {
+    if (value is Timestamp) {
+      return value.toDate();
+    } else if (value is String) {
+      return DateTime.tryParse(value) ?? DateTime.now();
+    } else {
+      return DateTime.now();
+    }
   }
 }

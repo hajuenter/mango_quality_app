@@ -1,23 +1,31 @@
-import 'package:dio/dio.dart';
-
-import '../config/api.dart';
-import '../responses/mango_all_response.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/mango_all_model.dart';
 
 class MangoAllService {
-  final Dio _dio;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  MangoAllService({String? token})
-    : _dio = Dio(
-        BaseOptions(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-        ),
-      );
+  /// Stream realtime untuk semua deteksi (urut waktu terbaru → terlama)
+  Stream<List<MangoAllModel>> streamAllDetections() {
+    return _firestore
+        .collection('mango_detections')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => MangoAllModel.fromFirestore(doc))
+              .toList();
+        });
+  }
 
-  Future<MangoAllResponse> getAllDetections() async {
-    final response = await _dio.get(ApiConfig.allDetection);
-    return MangoAllResponse.fromJson(response.data);
+  /// Fetch manual (untuk refresh dengan delay 3 detik)
+  Future<List<MangoAllModel>> fetchAllDetectionsOnce() async {
+    final snapshot = await _firestore
+        .collection('mango_detections')
+        .orderBy('timestamp', descending: true)
+        .get();
+
+    return snapshot.docs
+        .map((doc) => MangoAllModel.fromFirestore(doc))
+        .toList();
   }
 }
