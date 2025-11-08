@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mango_app/config/colors.dart';
+import '../config/colors.dart';
+import 'mango_statistic_controller.dart';
 
 import '../helpers/validator.dart';
 import '../responses/auth_response.dart';
@@ -161,6 +162,7 @@ class AuthController extends GetxController {
     try {
       Get.delete<MangoAllController>();
       Get.delete<MangoLatestController>();
+      Get.delete<MangoStatisticController>();
       Get.delete<HealthyRottenCountController>();
     } catch (e) {
       debugPrint('⚠️ Gagal hapus controller: $e');
