@@ -36,6 +36,7 @@ dependencies:
   firebase_auth: ^6.1.1
   firebase_auth_mocks: ^0.15.1
   firebase_core: ^4.2.0
+  fl_chart: ^1.1.1
   flutter:
     sdk: flutter
   flutter_dotenv: ^6.0.0
