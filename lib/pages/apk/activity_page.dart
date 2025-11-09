@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../config/colors.dart';
 import '../../controllers/mango_all_controller.dart';
@@ -61,9 +62,9 @@ class _ActivityPageState extends State<ActivityPage> {
                   bottomRight: Radius.circular(5),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Detail Aktivitas',
-                style: TextStyle(
+                style: GoogleFonts.rubik(
                   color: Colors.white,
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
@@ -162,7 +163,7 @@ class _ActivityPageState extends State<ActivityPage> {
                                             selectedDate != null
                                                 ? 'No activity found for this date'
                                                 : 'No recent activity available',
-                                            style: TextStyle(
+                                            style: GoogleFonts.rubik(
                                               fontSize: 16,
                                               color: Colors.grey[600],
                                               fontWeight: FontWeight.w500,

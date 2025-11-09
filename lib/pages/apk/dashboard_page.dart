@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../config/colors.dart';
 import '../../controllers/healthy_rotten_count_controller.dart';
@@ -59,9 +60,9 @@ class _DashboardPageState extends State<DashboardPage> {
                   bottomRight: Radius.circular(5),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Monitor Sortir Mangga',
-                style: TextStyle(
+                style: GoogleFonts.rubik(
                   color: Colors.white,
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
@@ -194,9 +195,9 @@ class _DashboardPageState extends State<DashboardPage> {
                                               ),
                                             ),
                                           )
-                                        : const Text(
+                                        : Text(
                                             'Aktivitas Real-Time',
-                                            style: TextStyle(
+                                            style: GoogleFonts.rubik(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black87,
@@ -244,7 +245,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
-                                        children: const [
+                                        children: [
                                           Icon(
                                             Icons.hourglass_empty_rounded,
                                             size: 50,
@@ -253,7 +254,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           SizedBox(height: 12),
                                           Text(
                                             'Tidak ada aktivitas terbaru',
-                                            style: TextStyle(
+                                            style: GoogleFonts.rubik(
                                               color: Colors.grey,
                                               fontSize: 15,
                                               fontWeight: FontWeight.w500,

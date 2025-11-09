@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mango_app/widgets/skeletons/line_chart_statistic_skeleton.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../config/colors.dart';
 import '../../controllers/mango_statistic_controller.dart';
@@ -37,9 +38,9 @@ class StatisticPage extends StatelessWidget {
                   bottomRight: Radius.circular(5),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Data Statistik',
-                style: TextStyle(
+                style: GoogleFonts.rubik(
                   color: Colors.white,
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
@@ -58,56 +59,62 @@ class StatisticPage extends StatelessWidget {
                   return SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Date Picker
-                        Card(
-                          color: Colors.white,
-                          elevation: 3,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    child: DefaultTextStyle(
+                      style: GoogleFonts.rubik(
+                        color: Colors.black,
+                        fontSize: 14,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // Date Picker
+                          Card(
+                            color: Colors.white,
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: loading
+                                  ? const DatePickerFieldSkeleton()
+                                  : DatePickerField(
+                                      selectedDate: controller.selectedDate,
+                                      onDateSelected: (date) {
+                                        controller.filterByDate(date);
+                                      },
+                                    ),
+                            ),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: loading
-                                ? const DatePickerFieldSkeleton()
-                                : DatePickerField(
-                                    selectedDate: controller.selectedDate,
-                                    onDateSelected: (date) {
-                                      controller.filterByDate(date);
-                                    },
-                                  ),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
+                          const SizedBox(height: 6),
 
-                        // Pie Chart (Per Hari)
-                        loading
-                            ? const PieChartStatisticSkeleton()
-                            : PieChartStatistic(
-                                healthyCount: controller.healthyCount,
-                                rottenCount: controller.rottenCount,
-                              ),
-                        const SizedBox(height: 6),
+                          // Pie Chart (Per Hari)
+                          loading
+                              ? const PieChartStatisticSkeleton()
+                              : PieChartStatistic(
+                                  healthyCount: controller.healthyCount,
+                                  rottenCount: controller.rottenCount,
+                                ),
+                          const SizedBox(height: 6),
 
-                        // Bar Chart (Per Bulan)
-                        loading
-                            ? const BarChartStatisticSkeleton()
-                            : BarChartStatistic(
-                                healthyPerMonth: controller.healthyPerMonth,
-                                rottenPerMonth: controller.rottenPerMonth,
-                              ),
-                        const SizedBox(height: 6),
+                          // Bar Chart (Per Bulan)
+                          loading
+                              ? const BarChartStatisticSkeleton()
+                              : BarChartStatistic(
+                                  healthyPerMonth: controller.healthyPerMonth,
+                                  rottenPerMonth: controller.rottenPerMonth,
+                                ),
+                          const SizedBox(height: 6),
 
-                        // Line Chart (Per Tahun)
-                        loading
-                            ? const LineChartStatisticSkeleton()
-                            : LineChartStatistic(
-                                healthyPerYear: controller.healthyPerYear,
-                                rottenPerYear: controller.rottenPerYear,
-                              ),
-                      ],
+                          // Line Chart (Per Tahun)
+                          loading
+                              ? const LineChartStatisticSkeleton()
+                              : LineChartStatistic(
+                                  healthyPerYear: controller.healthyPerYear,
+                                  rottenPerYear: controller.rottenPerYear,
+                                ),
+                        ],
+                      ),
                     ),
                   );
                 }),
