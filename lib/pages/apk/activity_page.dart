@@ -143,26 +143,34 @@ class _ActivityPageState extends State<ActivityPage> {
                                     ),
                                   )
                                 else if (filtered.isEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.all(32),
-                                    child: Column(
-                                      children: [
-                                        Icon(
-                                          Icons.inbox_outlined,
-                                          size: 64,
-                                          color: Colors.grey[400],
-                                        ),
-                                        const SizedBox(height: 16),
-                                        Text(
-                                          selectedDate != null
-                                              ? 'Tidak ada aktivitas pada tanggal ini'
-                                              : 'Belum ada aktivitas',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.grey[600],
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 40,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.inbox_rounded,
+                                            size: 70,
+                                            color: Colors.grey[400],
                                           ),
-                                        ),
-                                      ],
+                                          const SizedBox(height: 16),
+                                          Text(
+                                            selectedDate != null
+                                                ? 'No activity found for this date'
+                                                : 'No recent activity available',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey[600],
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   )
                                 else
