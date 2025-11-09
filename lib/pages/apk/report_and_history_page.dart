@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../config/colors.dart';
+import '../../widgets/custom_date_range_picker.dart';
+import '../../widgets/custom_table_widgets.dart';
 import '../../widgets/dashboard_card.dart';
 import '../../widgets/filter_chips_row.dart';
-import '../../widgets/custom_table_widgets.dart';
 
 class ReportAndHistoryPage extends StatefulWidget {
   const ReportAndHistoryPage({super.key});
@@ -116,10 +117,31 @@ class _ReportAndHistoryPageState extends State<ReportAndHistoryPage> {
                               FilterChipsRow(
                                 selectedFilter: selectedFilter,
                                 filters: ['Harian', 'Musim Panen', 'Custom'],
-                                onSelected: (filter) {
-                                  setState(() => selectedFilter = filter);
+                                onSelected: (filter) async {
+                                  if (filter == 'Custom') {
+                                    setState(() => selectedFilter = 'Custom');
+
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      barrierColor: Colors.black54,
+                                      builder: (context) {
+                                        return CustomDateRangePicker(
+                                          onApply: (start, end) {
+                                            debugPrint(
+                                              "Tanggal dipilih: $start - $end",
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    setState(() => selectedFilter = filter);
+                                  }
                                 },
                               ),
+
                               const SizedBox(height: 16),
 
                               // === Cards Statistik ===
