@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PieChartStatistic extends StatelessWidget {
   final int healthyCount;
@@ -27,9 +28,12 @@ class PieChartStatistic extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const Text(
+            Text(
               'Mangga Sehat & Busuk / Hari',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: GoogleFonts.rubik(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
@@ -72,7 +76,7 @@ class PieChartStatistic extends StatelessWidget {
             color: Colors.green,
             title: '${healthyPercent.toStringAsFixed(1)}%',
             radius: 60,
-            titleStyle: const TextStyle(
+            titleStyle: GoogleFonts.rubik(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 13,
@@ -83,7 +87,7 @@ class PieChartStatistic extends StatelessWidget {
             color: Colors.red,
             title: '${rottenPercent.toStringAsFixed(1)}%',
             radius: 60,
-            titleStyle: const TextStyle(
+            titleStyle: GoogleFonts.rubik(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 13,
@@ -108,7 +112,7 @@ class PieChartStatistic extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'Tidak ada data',
-            style: TextStyle(
+            style: GoogleFonts.rubik(
               fontSize: 16,
               color: Colors.grey.shade600,
               fontWeight: FontWeight.w500,
@@ -117,7 +121,7 @@ class PieChartStatistic extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             'Belum ada statistik untuk ditampilkan',
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+            style: GoogleFonts.rubik(fontSize: 12, color: Colors.grey.shade500),
           ),
         ],
       ),
@@ -141,7 +145,7 @@ class _LegendDot extends StatelessWidget {
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 6),
-        Text(label, style: const TextStyle(fontSize: 12)),
+        Text(label, style: GoogleFonts.rubik(fontSize: 12)),
       ],
     );
   }

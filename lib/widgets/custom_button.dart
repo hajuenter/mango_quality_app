@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomButton extends StatelessWidget {
   final String label;
@@ -41,7 +42,7 @@ class CustomButton extends StatelessWidget {
             )
           : Text(
               label,
-              style: TextStyle(
+              style: GoogleFonts.rubik(
                 fontSize: fontSize,
                 fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
                 color: textColor,

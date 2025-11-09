@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomSnackbar {
   static OverlayEntry? _activeEntry;
@@ -247,7 +248,7 @@ class _AnimatedSnackbarState extends State<_AnimatedSnackbar>
                               children: [
                                 Text(
                                   widget.title,
-                                  style: TextStyle(
+                                  style: GoogleFonts.rubik(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                     color: widget.textColor,
@@ -255,7 +256,7 @@ class _AnimatedSnackbarState extends State<_AnimatedSnackbar>
                                 ),
                                 Text(
                                   widget.message,
-                                  style: TextStyle(
+                                  style: GoogleFonts.rubik(
                                     fontSize: 13,
                                     color: widget.textColor.withValues(
                                       alpha: 0.85,

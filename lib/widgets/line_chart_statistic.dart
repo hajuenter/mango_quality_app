@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LineChartStatistic extends StatelessWidget {
   final Map<int, int> healthyPerYear;
@@ -23,9 +24,12 @@ class LineChartStatistic extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const Text(
+            Text(
               'Mangga Sehat dan Busuk / Tahun',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: GoogleFonts.rubik(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
@@ -108,7 +112,10 @@ class LineChartStatistic extends StatelessWidget {
               getTitlesWidget: (value, _) {
                 return Text(
                   value.toInt().toString(),
-                  style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
+                  style: GoogleFonts.rubik(
+                    fontSize: 11,
+                    color: Colors.grey.shade700,
+                  ),
                 );
               },
             ),
@@ -130,7 +137,7 @@ class LineChartStatistic extends StatelessWidget {
                 }
                 return Text(
                   allYears[index].toString(),
-                  style: TextStyle(
+                  style: GoogleFonts.rubik(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                     color: Colors.grey.shade700,
@@ -204,7 +211,7 @@ class LineChartStatistic extends StatelessWidget {
 
                 return LineTooltipItem(
                   '${isHealthy ? 'Sehat' : 'Busuk'}\n$year: ${spot.y.toInt()}',
-                  const TextStyle(
+                  GoogleFonts.rubik(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
@@ -227,7 +234,7 @@ class LineChartStatistic extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'Tidak ada data',
-            style: TextStyle(
+            style: GoogleFonts.rubik(
               fontSize: 16,
               color: Colors.grey.shade600,
               fontWeight: FontWeight.w500,
@@ -236,7 +243,7 @@ class LineChartStatistic extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             'Belum ada tren tahunan untuk ditampilkan',
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+            style: GoogleFonts.rubik(fontSize: 12, color: Colors.grey.shade500),
           ),
         ],
       ),
@@ -260,7 +267,7 @@ class _LegendDot extends StatelessWidget {
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 6),
-        Text(label, style: const TextStyle(fontSize: 12)),
+        Text(label, style: GoogleFonts.rubik(fontSize: 12)),
       ],
     );
   }

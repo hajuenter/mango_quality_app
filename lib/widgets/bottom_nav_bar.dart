@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controllers/nav_controller.dart';
 import '../config/colors.dart';
 
@@ -96,7 +97,7 @@ class BottomNavBar extends StatelessWidget {
                         duration: const Duration(milliseconds: 200),
                         child: Text(
                           labels[index],
-                          style: TextStyle(
+                          style: GoogleFonts.rubik(
                             fontSize: 10,
                             color: isActive
                                 ? AppColors.primaryAuth
