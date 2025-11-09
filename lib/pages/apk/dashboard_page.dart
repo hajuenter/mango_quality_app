@@ -231,15 +231,36 @@ class _DashboardPageState extends State<DashboardPage> {
                                   }
 
                                   if (detections.isEmpty) {
-                                    return const Padding(
-                                      padding: EdgeInsets.all(20),
-                                      child: Text(
-                                        'Belum ada aktivitas',
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 14,
-                                        ),
-                                        textAlign: TextAlign.center,
+                                    return Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 40,
+                                        horizontal: 20,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade50,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: const [
+                                          Icon(
+                                            Icons.hourglass_empty_rounded,
+                                            size: 50,
+                                            color: Colors.grey,
+                                          ),
+                                          SizedBox(height: 12),
+                                          Text(
+                                            'Tidak ada aktivitas terbaru',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
                                       ),
                                     );
                                   }
