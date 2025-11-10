@@ -15,6 +15,8 @@ class LineChartStatistic extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasData = healthyPerYear.isNotEmpty || rottenPerYear.isNotEmpty;
+    final totalHealthy = healthyPerYear.values.fold<int>(0, (a, b) => a + b);
+    final totalRotten = rottenPerYear.values.fold<int>(0, (a, b) => a + b);
 
     return Card(
       color: Colors.white,
@@ -43,10 +45,10 @@ class LineChartStatistic extends StatelessWidget {
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                _LegendDot(color: Colors.green, label: 'Sehat'),
-                SizedBox(width: 16),
-                _LegendDot(color: Colors.red, label: 'Busuk'),
+              children: [
+                _LegendDot(color: Colors.green, label: 'Sehat: $totalHealthy'),
+                const SizedBox(width: 16),
+                _LegendDot(color: Colors.red, label: 'Busuk: $totalRotten'),
               ],
             ),
           ],

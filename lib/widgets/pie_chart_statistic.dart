@@ -17,8 +17,9 @@ class PieChartStatistic extends StatelessWidget {
     final total = healthyCount + rottenCount;
     final hasData = total > 0;
 
-    final healthyPercent = total > 0 ? (healthyCount / total) * 100 : 0.0;
-    final rottenPercent = total > 0 ? (rottenCount / total) * 100 : 0.0;
+    // Proporsi hanya untuk membentuk pie chart (tidak ditampilkan)
+    final healthyValue = total > 0 ? healthyCount.toDouble() : 0.0;
+    final rottenValue = total > 0 ? rottenCount.toDouble() : 0.0;
 
     return Card(
       color: Colors.white,
@@ -38,23 +39,23 @@ class PieChartStatistic extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // Tampilkan chart atau pesan kosong
+            // Chart
             SizedBox(
               height: 200,
               child: hasData
-                  ? _buildChart(healthyPercent, rottenPercent)
+                  ? _buildChart(healthyValue, rottenValue)
                   : _buildEmptyState(),
             ),
 
             const SizedBox(height: 12),
 
-            // Legend
+            // Legend + angka
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                _LegendDot(color: Colors.green, label: 'Mangga Sehat'),
-                SizedBox(width: 16),
-                _LegendDot(color: Colors.red, label: 'Mangga Busuk'),
+              children: [
+                _LegendDot(color: Colors.green, label: 'Sehat: $healthyCount'),
+                const SizedBox(width: 16),
+                _LegendDot(color: Colors.red, label: 'Busuk: $rottenCount'),
               ],
             ),
           ],
@@ -64,7 +65,7 @@ class PieChartStatistic extends StatelessWidget {
   }
 
   /// Chart-nya
-  Widget _buildChart(double healthyPercent, double rottenPercent) {
+  Widget _buildChart(double healthyValue, double rottenValue) {
     return PieChart(
       PieChartData(
         sectionsSpace: 2,
@@ -72,25 +73,25 @@ class PieChartStatistic extends StatelessWidget {
         startDegreeOffset: -90,
         sections: [
           PieChartSectionData(
-            value: healthyPercent,
+            value: healthyValue,
             color: Colors.green,
-            title: '${healthyPercent.toStringAsFixed(1)}%',
+            title: '${healthyValue.toInt()}',
             radius: 60,
             titleStyle: GoogleFonts.rubik(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 13,
+              fontSize: 14,
             ),
           ),
           PieChartSectionData(
-            value: rottenPercent,
+            value: rottenValue,
             color: Colors.red,
-            title: '${rottenPercent.toStringAsFixed(1)}%',
+            title: '${rottenValue.toInt()}',
             radius: 60,
             titleStyle: GoogleFonts.rubik(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 13,
+              fontSize: 14,
             ),
           ),
         ],

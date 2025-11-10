@@ -16,6 +16,10 @@ class BarChartStatistic extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasData = healthyPerMonth.isNotEmpty || rottenPerMonth.isNotEmpty;
 
+    // Hitung total
+    final totalHealthy = healthyPerMonth.values.fold<int>(0, (a, b) => a + b);
+    final totalRotten = rottenPerMonth.values.fold<int>(0, (a, b) => a + b);
+
     return Card(
       color: Colors.white,
       elevation: 3,
@@ -34,21 +38,21 @@ class BarChartStatistic extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // Tampilkan chart atau pesan "Tidak ada data"
+            // Chart
             SizedBox(
-              height: 220,
+              height: 240,
               child: hasData ? _buildChart() : _buildEmptyState(),
             ),
 
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
 
-            // Legend
+            // Legend dengan angka total
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                _LegendDot(color: Colors.green, label: 'Sehat'),
-                SizedBox(width: 16),
-                _LegendDot(color: Colors.red, label: 'Busuk'),
+              children: [
+                _LegendDot(color: Colors.green, label: 'Sehat: $totalHealthy'),
+                const SizedBox(width: 16),
+                _LegendDot(color: Colors.red, label: 'Busuk: $totalRotten'),
               ],
             ),
           ],
@@ -128,18 +132,21 @@ class BarChartStatistic extends StatelessWidget {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 28,
+              reservedSize: 36, // sedikit lebih tinggi biar muat teks miring
               getTitlesWidget: (value, _) {
                 final index = value.toInt() - 1;
                 if (index < 0 || index >= monthLabels.length) {
                   return const SizedBox();
                 }
-                return Text(
-                  monthLabels[index],
-                  style: GoogleFonts.rubik(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade700,
+                return Transform.rotate(
+                  angle: -0.6, // sekitar -30 derajat
+                  child: Text(
+                    monthLabels[index],
+                    style: GoogleFonts.rubik(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade700,
+                    ),
                   ),
                 );
               },
@@ -149,7 +156,7 @@ class BarChartStatistic extends StatelessWidget {
         barGroups: months.map((month) {
           return BarChartGroupData(
             x: month,
-            barsSpace: 4,
+            barsSpace: 0,
             barRods: [
               BarChartRodData(
                 toY: (healthyPerMonth[month] ?? 0).toDouble(),
