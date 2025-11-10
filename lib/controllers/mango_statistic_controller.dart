@@ -84,38 +84,60 @@ class MangoStatisticController extends GetxController {
 
   Map<int, int> get healthyPerMonth {
     final map = <int, int>{};
-    for (var d in filteredData) {
-      final month = d.timestamp.month;
-      if (d.isHealthy) map[month] = (map[month] ?? 0) + 1;
+    final source = selectedDate == null
+        ? allData
+        : allData.where(
+            (d) =>
+                d.timestamp.year == selectedDate!.year &&
+                d.timestamp.month == selectedDate!.month,
+          );
+    for (var d in source) {
+      if (d.isHealthy) {
+        map[d.timestamp.month] = (map[d.timestamp.month] ?? 0) + 1;
+      }
     }
     return map;
   }
 
   Map<int, int> get rottenPerMonth {
     final map = <int, int>{};
-    for (var d in filteredData) {
-      final month = d.timestamp.month;
-      if (d.isRotten) map[month] = (map[month] ?? 0) + 1;
+    final source = selectedDate == null
+        ? allData
+        : allData.where(
+            (d) =>
+                d.timestamp.year == selectedDate!.year &&
+                d.timestamp.month == selectedDate!.month,
+          );
+    for (var d in source) {
+      if (d.isRotten) {
+        map[d.timestamp.month] = (map[d.timestamp.month] ?? 0) + 1;
+      }
     }
     return map;
   }
 
   Map<int, int> get healthyPerYear {
     final map = <int, int>{};
-    final source = selectedDate == null ? allData : filteredData;
+    final source = selectedDate == null
+        ? allData
+        : allData.where((d) => d.timestamp.year == selectedDate!.year);
     for (var d in source) {
-      final year = d.timestamp.year;
-      if (d.isHealthy) map[year] = (map[year] ?? 0) + 1;
+      if (d.isHealthy) {
+        map[d.timestamp.year] = (map[d.timestamp.year] ?? 0) + 1;
+      }
     }
     return map;
   }
 
   Map<int, int> get rottenPerYear {
     final map = <int, int>{};
-    final source = selectedDate == null ? allData : filteredData;
+    final source = selectedDate == null
+        ? allData
+        : allData.where((d) => d.timestamp.year == selectedDate!.year);
     for (var d in source) {
-      final year = d.timestamp.year;
-      if (d.isRotten) map[year] = (map[year] ?? 0) + 1;
+      if (d.isRotten) {
+        map[d.timestamp.year] = (map[d.timestamp.year] ?? 0) + 1;
+      }
     }
     return map;
   }
