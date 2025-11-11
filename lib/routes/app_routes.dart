@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import '../pages/apk/musim_intro_page.dart';
+import '../pages/apk/musim_start_page.dart';
 
 import '../pages/auth/login_page.dart';
 import '../pages/auth/register_page.dart';
@@ -23,6 +25,8 @@ class AppRoutes {
   static const main = '/main';
 
   static const dashboard = '/dashboard';
+  static const musimIntro = '/musim_intro';
+  static const musimStart = '/musim_start';
   static const activity = '/activity';
   static const statistic = '/statistic';
   static const reportAndHistory = '/report_and_history';
@@ -38,6 +42,8 @@ class AppRoutes {
     GetPage(name: main, page: () => MainNavPage()),
 
     GetPage(name: dashboard, page: () => const DashboardPage()),
+    GetPage(name: musimIntro, page: () => const MusimIntroPage()),
+    GetPage(name: musimStart, page: () => const MusimStartPage()),
     GetPage(name: activity, page: () => const ActivityPage()),
     GetPage(name: statistic, page: () => const StatisticPage()),
     GetPage(name: reportAndHistory, page: () => const ReportAndHistoryPage()),

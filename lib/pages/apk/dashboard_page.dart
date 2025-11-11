@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../config/colors.dart';
 import '../../controllers/healthy_rotten_count_controller.dart';
 import '../../controllers/mango_latest_controller.dart';
+import '../../widgets/custom_feature.dart';
 import '../../widgets/dashboard_card.dart';
 import '../../widgets/realtime_activity_card.dart';
+import '../../widgets/skeletons/custom_feature_skeleton.dart';
 import '../../widgets/skeletons/dashboard_card_skeleton.dart';
 import '../../widgets/skeletons/realtime_activity_card_skeleton.dart';
 
@@ -41,6 +43,11 @@ class _DashboardPageState extends State<DashboardPage> {
       controller.refreshWithDelay(),
       latestController.refreshWithDelay(),
     ]);
+  }
+
+  void _navigateToMusim() {
+    FocusScope.of(context).unfocus();
+    Get.offNamed('/musim_intro');
   }
 
   @override
@@ -94,7 +101,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 (width / crossAxisCount) / 180;
 
                             return Padding(
-                              padding: const EdgeInsets.all(16),
+                              padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
                               child: GridView.builder(
                                 key: key,
                                 shrinkWrap: true,
@@ -156,6 +163,13 @@ class _DashboardPageState extends State<DashboardPage> {
                             );
                           },
                         );
+                      }),
+                      Obx(() {
+                        final isLoading = controller.isLoading.value;
+                        if (isLoading) {
+                          return const CustomFeatureSkeleton();
+                        }
+                        return CustomFeature(onTap: _navigateToMusim);
                       }),
 
                       // === Bagian Real-time Activity ===
