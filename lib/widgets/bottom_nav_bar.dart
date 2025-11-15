@@ -14,6 +14,7 @@ class BottomNavBar extends StatelessWidget {
     Icons.insights_rounded,
     Icons.bar_chart_rounded,
     Icons.receipt_long_rounded,
+    Icons.smart_toy_rounded,
     Icons.settings_rounded,
   ];
 
@@ -22,6 +23,7 @@ class BottomNavBar extends StatelessWidget {
     "Aktivitas",
     "Statistik",
     "Riwayat",
+    "Mango AI",
     "Pengaturan",
   ];
 
