@@ -161,8 +161,8 @@ class _ActivityPageState extends State<ActivityPage> {
                                           const SizedBox(height: 16),
                                           Text(
                                             selectedDate != null
-                                                ? 'No activity found for this date'
-                                                : 'No recent activity available',
+                                                ? 'Tidak ada aktivitas di temukan pada tanggal ini'
+                                                : 'Tidak ada aktivitas di temukan',
                                             style: GoogleFonts.rubik(
                                               fontSize: 16,
                                               color: Colors.grey[600],

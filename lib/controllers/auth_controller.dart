@@ -1,18 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../config/colors.dart';
-import 'mango_statistic_controller.dart';
 
+import '../config/colors.dart';
+import '../controllers/healthy_rotten_count_controller.dart';
+import '../controllers/mango_all_controller.dart';
+import '../controllers/mango_latest_controller.dart';
 import '../helpers/validator.dart';
 import '../responses/auth_response.dart';
 import '../routes/app_routes.dart';
 import '../services/auth_service.dart';
-import 'nav_controller.dart';
 import '../widgets/custom_snackbar.dart';
-import '../controllers/mango_all_controller.dart';
-import '../controllers/mango_latest_controller.dart';
-import '../controllers/healthy_rotten_count_controller.dart';
+import 'mango_daily_controller.dart';
+import 'mango_statistic_controller.dart';
+import 'nav_controller.dart';
+import 'season_controller.dart';
 
 class AuthController extends GetxController {
   final AuthService _authService;
@@ -157,13 +159,26 @@ class AuthController extends GetxController {
 
   Future<void> logout() async {
     isLoading.value = true;
-    // atau
-    // Get.deleteAll(force: true);
+
     try {
-      Get.delete<MangoAllController>();
-      Get.delete<MangoLatestController>();
-      Get.delete<MangoStatisticController>();
-      Get.delete<HealthyRottenCountController>();
+      if (Get.isRegistered<MangoAllController>()) {
+        Get.delete<MangoAllController>(force: true);
+      }
+      if (Get.isRegistered<MangoLatestController>()) {
+        Get.delete<MangoLatestController>(force: true);
+      }
+      if (Get.isRegistered<MangoStatisticController>()) {
+        Get.delete<MangoStatisticController>(force: true);
+      }
+      if (Get.isRegistered<HealthyRottenCountController>()) {
+        Get.delete<HealthyRottenCountController>(force: true);
+      }
+      if (Get.isRegistered<MangoDailyController>()) {
+        Get.delete<MangoDailyController>(force: true);
+      }
+      if (Get.isRegistered<SeasonController>()) {
+        Get.delete<SeasonController>(force: true);
+      }
     } catch (e) {
       debugPrint('⚠️ Gagal hapus controller: $e');
     }

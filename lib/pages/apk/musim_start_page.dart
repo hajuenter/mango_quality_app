@@ -38,12 +38,12 @@ class _MusimStartPageState extends State<MusimStartPage> {
     );
 
     Future.delayed(const Duration(milliseconds: 800), () {
-      Get.offAllNamed(AppRoutes.main, arguments: {'tabIndex': 0});
+      Get.toNamed(AppRoutes.main, arguments: {'tabIndex': 0});
     });
   }
 
   void _goToDashboard() {
-    Get.offAllNamed(AppRoutes.main, arguments: {'tabIndex': 0});
+    Get.toNamed(AppRoutes.main, arguments: {'tabIndex': 0});
   }
 
   @override
@@ -53,7 +53,6 @@ class _MusimStartPageState extends State<MusimStartPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // === HEADER ===
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(

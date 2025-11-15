@@ -8,6 +8,7 @@ import '../apk/dashboard_page.dart';
 import '../apk/report_and_history_page.dart';
 import '../apk/setting_page.dart';
 import '../apk/statistic_page.dart';
+import '../apk/mango_ai_page.dart';
 
 class MainNavPage extends StatelessWidget {
   MainNavPage({super.key});
@@ -19,6 +20,7 @@ class MainNavPage extends StatelessWidget {
     ActivityPage(),
     StatisticPage(),
     ReportAndHistoryPage(),
+    MangoAiPage(),
     SettingPage(),
   ];
 

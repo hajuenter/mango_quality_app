@@ -47,7 +47,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   void _navigateToMusim() {
     FocusScope.of(context).unfocus();
-    Get.offNamed('/musim_intro');
+    Get.toNamed('/musim_intro');
   }
 
   @override
