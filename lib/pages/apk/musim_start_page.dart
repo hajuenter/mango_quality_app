@@ -42,7 +42,7 @@ class _MusimStartPageState extends State<MusimStartPage> {
     });
   }
 
-  void _goToDashboard() {
+  void _navigateToDashboard() {
     Get.toNamed(AppRoutes.main, arguments: {'tabIndex': 0});
   }
 
@@ -70,7 +70,7 @@ class _MusimStartPageState extends State<MusimStartPage> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: _goToDashboard,
+                    onPressed: _navigateToDashboard,
                   ),
                   const SizedBox(width: 8),
                   Expanded(

@@ -49,6 +49,11 @@ class _MusimIntroPageState extends State<MusimIntroPage> {
     },
   ];
 
+  void _navigateToMusimStart() {
+    FocusScope.of(context).unfocus();
+    Get.toNamed('/musim_start');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,7 +129,7 @@ class _MusimIntroPageState extends State<MusimIntroPage> {
               ElevatedButton(
                 onPressed: () {
                   if (currentIndex == slides.length - 1) {
-                    Get.toNamed('/musim_start');
+                    _navigateToMusimStart();
                   } else {
                     _controller.nextPage(
                       duration: const Duration(milliseconds: 300),
