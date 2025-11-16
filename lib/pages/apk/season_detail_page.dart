@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+
 import '../../config/colors.dart';
-import '../../services/season_service.dart';
 import '../../models/season_model.dart';
+import '../../services/season_service.dart';
 
 class SeasonDetailPage extends StatelessWidget {
   final SeasonService _service = SeasonService();
@@ -12,6 +14,19 @@ class SeasonDetailPage extends StatelessWidget {
 
   void _goBack() {
     Get.back();
+  }
+
+  String _formatLabel(String? raw) {
+    if (raw == null) return "-";
+
+    switch (raw) {
+      case 'mango_healthy':
+        return 'Mangga Sehat';
+      case 'mango_rotten':
+        return 'Mangga Busuk';
+      default:
+        return '-';
+    }
   }
 
   @override
@@ -46,14 +61,14 @@ class SeasonDetailPage extends StatelessWidget {
                       season.name,
                       style: GoogleFonts.rubik(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 17,
                         fontWeight: FontWeight.w600,
                       ),
                       textAlign: TextAlign.center,
                     ),
                   ),
 
-                  const SizedBox(width: 20),
+                  const SizedBox(width: 40),
                 ],
               ),
             ),
@@ -116,24 +131,26 @@ class SeasonDetailPage extends StatelessWidget {
 
                               const SizedBox(width: 12),
 
-                              // ================= TEXT =================
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      item['label'] ?? '-',
+                                      _formatLabel(item['label']),
                                       style: GoogleFonts.rubik(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w500,
                                         color: Colors.black,
                                       ),
                                     ),
 
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 2),
 
                                     Text(
-                                      item['timestamp'].toString(),
+                                      DateFormat(
+                                        'd MMMM yyyy, HH:mm',
+                                        'id_ID',
+                                      ).format(item['timestamp'].toDate()),
                                       style: GoogleFonts.rubik(
                                         fontSize: 13,
                                         color: Colors.grey.shade700,

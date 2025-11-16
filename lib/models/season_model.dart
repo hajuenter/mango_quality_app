@@ -26,13 +26,35 @@ class SeasonModel {
   factory SeasonModel.fromDoc(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 
+    // ------- PARSE started_at -------
+    final startedRaw = data['started_at'];
+    DateTime parsedStartedAt;
+
+    if (startedRaw is Timestamp) {
+      parsedStartedAt = startedRaw.toDate();
+    } else if (startedRaw is String) {
+      parsedStartedAt = DateTime.tryParse(startedRaw) ?? DateTime.now();
+    } else {
+      parsedStartedAt = DateTime.now();
+    }
+
+    // ------- PARSE ended_at -------
+    final endedRaw = data['ended_at'];
+    DateTime? parsedEndedAt;
+
+    if (endedRaw is Timestamp) {
+      parsedEndedAt = endedRaw.toDate();
+    } else if (endedRaw is String) {
+      parsedEndedAt = DateTime.tryParse(endedRaw);
+    } else {
+      parsedEndedAt = null;
+    }
+
     return SeasonModel(
-      id: data['id'],
+      id: doc.id,
       name: data['name'],
-      startedAt: (data['started_at'] as Timestamp).toDate(),
-      endedAt: data['ended_at'] != null
-          ? (data['ended_at'] as Timestamp).toDate()
-          : null,
+      startedAt: parsedStartedAt,
+      endedAt: parsedEndedAt,
       status: data['status'],
       healthyCount: data['healthy_count'] ?? 0,
       rottenCount: data['rotten_count'] ?? 0,

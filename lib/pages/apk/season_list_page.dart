@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../controllers/season_controller.dart';
+import 'package:intl/intl.dart';
+
 import '../../config/colors.dart';
+import '../../controllers/season_controller.dart';
 
 class SeasonListPage extends StatefulWidget {
   const SeasonListPage({super.key});
@@ -30,6 +32,17 @@ class _SeasonListPageState extends State<SeasonListPage> {
     Get.back();
   }
 
+  String _formatStatus(String status) {
+    switch (status) {
+      case 'active':
+        return 'Aktif';
+      case 'inactive':
+        return 'Tidak Aktif';
+      default:
+        return status; // fallback
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +50,6 @@ class _SeasonListPageState extends State<SeasonListPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // ================= HEADER CUSTOM ==================
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -109,7 +121,6 @@ class _SeasonListPageState extends State<SeasonListPage> {
                               Icon(Icons.event, color: AppColors.primaryAuth),
                               const SizedBox(width: 12),
 
-                              // ========== TEXT CONTENT ==========
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,20 +128,21 @@ class _SeasonListPageState extends State<SeasonListPage> {
                                     Text(
                                       season.name,
                                       style: GoogleFonts.rubik(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
                                     Text(
-                                      "${season.startedAt} - ${season.endedAt ?? 'Sedang berlangsung'}",
-                                      style: GoogleFonts.rubik(fontSize: 13),
+                                      "${DateFormat('d MMMM yyyy', 'id_ID').format(season.startedAt)}"
+                                      " - "
+                                      "${season.endedAt != null ? DateFormat('d MMMM yyyy', 'id_ID').format(season.endedAt!) : 'Berlangsung'}",
+                                      style: GoogleFonts.rubik(fontSize: 12),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      "Status: ${season.status}",
+                                      "Status: ${_formatStatus(season.status)}",
                                       style: GoogleFonts.rubik(
-                                        fontSize: 12,
+                                        fontSize: 10,
                                         color: Colors.grey[700],
                                       ),
                                     ),

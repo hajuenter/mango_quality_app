@@ -43,6 +43,7 @@ dependencies:
   flutter_svg: ^2.2.1
   get: ^4.7.2
   google_fonts: ^6.3.2
+  intl: ^0.20.2
   mockito: ^5.5.1
   mocktail: ^1.0.4
   shimmer: ^3.0.0

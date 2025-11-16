@@ -75,14 +75,11 @@ class SeasonService {
       int rotten = 0;
 
       for (var doc in snapshot.docs) {
-        final data = doc.data();
-        final label = data['label'] ?? '';
+        final raw = (doc['label'] ?? "").toString().toLowerCase();
 
-        if (label.toLowerCase() == 'healthy' ||
-            label.toLowerCase() == 'sehat') {
+        if (raw.contains('healthy')) {
           healthy++;
-        } else if (label.toLowerCase() == 'rotten' ||
-            label.toLowerCase() == 'busuk') {
+        } else if (raw.contains('rotten')) {
           rotten++;
         }
       }
