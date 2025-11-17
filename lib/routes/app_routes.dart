@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 import '../pages/apk/activity_page.dart';
 import '../pages/apk/dashboard_page.dart';
+import '../pages/apk/mango_ai_page.dart';
 import '../pages/apk/musim_intro_page.dart';
 import '../pages/apk/musim_start_page.dart';
 import '../pages/apk/report_and_history_page.dart';
@@ -29,6 +30,7 @@ class AppRoutes {
   static const reportAndHistory = '/report_and_history';
   static const seasonList = '/season_list';
   static const seasonDetail = '/season_detail';
+  static const mangoAi = '/mango_ai';
   static const setting = '/setting';
 
   static final routes = [
@@ -45,6 +47,7 @@ class AppRoutes {
     GetPage(name: reportAndHistory, page: () => const ReportAndHistoryPage()),
     GetPage(name: seasonList, page: () => SeasonListPage()),
     GetPage(name: seasonDetail, page: () => SeasonDetailPage()),
+    GetPage(name: mangoAi, page: () => const MangoAiPage()),
     GetPage(name: setting, page: () => const SettingPage()),
   ];
 }
