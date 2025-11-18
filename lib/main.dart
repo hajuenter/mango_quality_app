@@ -54,8 +54,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Mango App',
       initialRoute: AppRoutes.splash,
-      defaultTransition: Transition.rightToLeft,
-      transitionDuration: const Duration(milliseconds: 350),
+      defaultTransition: Transition.fade,
+      transitionDuration: const Duration(milliseconds: 30),
       getPages: AppRoutes.routes,
       theme: ThemeData(
         useMaterial3: true,
