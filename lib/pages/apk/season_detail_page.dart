@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../config/colors.dart';
 import '../../models/season_model.dart';
@@ -112,22 +113,36 @@ class SeasonDetailPage extends StatelessWidget {
                           padding: const EdgeInsets.all(12),
                           child: Row(
                             children: [
-                              // ================= IMAGE =================
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  item['image_url'],
+                                child: CachedNetworkImage(
+                                  imageUrl: item['image_url'],
                                   width: 70,
                                   height: 70,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
+
+                                  placeholder: (context, url) => Container(
+                                    width: 70,
+                                    height: 70,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade300,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: const Icon(Icons.image),
+                                  ),
+
+                                  // Jika error
+                                  errorWidget: (context, url, error) =>
                                       Container(
                                         width: 70,
                                         height: 70,
-                                        color: Colors.grey.shade300,
-                                        child: const Icon(
-                                          Icons.image_not_supported,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade200,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
+                                        child: const Icon(Icons.broken_image),
                                       ),
                                 ),
                               ),
