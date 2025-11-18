@@ -2,10 +2,10 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'config/colors.dart';
 import 'controllers/auth_controller.dart';
