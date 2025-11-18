@@ -52,7 +52,8 @@ class _SeasonListPageState extends State<SeasonListPage> {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              height: 77,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: const BoxDecoration(
                 color: AppColors.primaryAuth,
                 borderRadius: BorderRadius.only(
@@ -60,14 +61,18 @@ class _SeasonListPageState extends State<SeasonListPage> {
                   bottomRight: Radius.circular(5),
                 ),
               ),
-              child: Row(
+              child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: _goBack,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: _goBack,
+                    ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
+
+                  Center(
                     child: Text(
                       'Riwayat Musim',
                       style: GoogleFonts.rubik(
@@ -78,7 +83,6 @@ class _SeasonListPageState extends State<SeasonListPage> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(width: 40),
                 ],
               ),
             ),

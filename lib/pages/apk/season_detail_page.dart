@@ -40,7 +40,8 @@ class SeasonDetailPage extends StatelessWidget {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              height: 77, // tinggi fix supaya sama dengan header lainnya
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: const BoxDecoration(
                 color: AppColors.primaryAuth,
                 borderRadius: BorderRadius.only(
@@ -48,27 +49,29 @@ class SeasonDetailPage extends StatelessWidget {
                   bottomRight: Radius.circular(5),
                 ),
               ),
-              child: Row(
+              child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: _goBack,
+                  // Tombol back di kiri
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: _goBack,
+                    ),
                   ),
-                  const SizedBox(width: 8),
 
-                  Expanded(
+                  Center(
                     child: Text(
                       season.name,
                       style: GoogleFonts.rubik(
                         color: Colors.white,
-                        fontSize: 17,
+                        fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),
                       textAlign: TextAlign.center,
                     ),
                   ),
-
-                  const SizedBox(width: 40),
                 ],
               ),
             ),
