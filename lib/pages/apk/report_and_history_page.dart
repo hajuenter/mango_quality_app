@@ -12,6 +12,7 @@ import '../../widgets/custom_table_empty.dart';
 import '../../widgets/dashboard_card.dart';
 import '../../widgets/download_pdf_button.dart';
 import '../../widgets/filter_chips_row.dart';
+import '../../widgets/season_download_bottom_sheet.dart';
 import '../../widgets/skeletons/custom_table_skeleton.dart';
 import '../../widgets/skeletons/dashboard_card_skeleton.dart';
 import '../../widgets/skeletons/download_pdf_button_skeleton.dart';
@@ -304,7 +305,21 @@ class _ReportAndHistoryPageState extends State<ReportAndHistoryPage> {
                                 child: Obx(() {
                                   return controller.isLoading.value
                                       ? const DownloadPdfButtonSkeleton()
-                                      : DownloadPdfButton(onPressed: () {});
+                                      : DownloadPdfButton(
+                                          onPressed: () {
+                                            final seasons = seasonController
+                                                .seasonList
+                                                .where(
+                                                  (s) => s.status != 'active',
+                                                )
+                                                .toList();
+
+                                            SeasonDownloadBottomSheet.show(
+                                              context,
+                                              seasons,
+                                            );
+                                          },
+                                        );
                                 }),
                               ),
                             ],

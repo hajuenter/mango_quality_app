@@ -49,6 +49,9 @@ dependencies:
   markdown: ^7.3.0
   mockito: ^5.5.1
   mocktail: ^1.0.4
+  open_file: ^3.5.10
+  path_provider: ^2.1.5
+  pdf: ^3.11.3
   shimmer: ^3.0.0
   smooth_page_indicator: ^1.2.1
 
