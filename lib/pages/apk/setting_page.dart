@@ -193,9 +193,11 @@ Dengan algoritma machine learning K-Nearest Neighbors (KNN), sistem mampu mendet
                               });
                             },
                             content: Text(
-                              '1. Ambil gambar mangga.\n'
-                              '2. Sistem akan mendeteksi kondisi mangga.\n'
-                              '3. Lihat hasil sortir di halaman utama.',
+                              '1. Pastikan perangkat keras terhubung dan aktif.\n'
+                              '2. Mulai atau akhiri musim melalui menu Beranda.\n'
+                              '3. Pantau hasil deteksi secara real-time di halaman Aktivitas.\n'
+                              '4. Lihat statistik panen di menu Statistik.\n'
+                              '5. Unduh laporan PDF pada menu Laporan atau detail musim.',
                               textAlign: TextAlign.start,
                               style: GoogleFonts.rubik(
                                 fontSize: 13,
@@ -218,7 +220,7 @@ Dengan algoritma machine learning K-Nearest Neighbors (KNN), sistem mampu mendet
                             },
                             content: Text(
                               'Gunakan Asisten Pintar untuk bertanya seputar cara kerja sistem, '
-                              'hasil deteksi, atau panduan penggunaan MangoSort. '
+                              'perbedaan mangga sehat dan busuk, atau panduan penggunaan MangoSort. '
                               'Asisten ini akan membantu Anda secara interaktif menggunakan kecerdasan buatan.',
                               textAlign: TextAlign.start,
                               style: GoogleFonts.rubik(
@@ -241,7 +243,7 @@ Dengan algoritma machine learning K-Nearest Neighbors (KNN), sistem mampu mendet
                               });
                             },
                             content: Text(
-                              'Kami sangat menghargai masukan Anda!\nKirim saran ke: support@mangosort.app',
+                              'Masukan Anda sangat berharga bagi kami.\nSilakan kirim saran atau pertanyaan ke: support@mangosort.app',
                               textAlign: TextAlign.start,
                               style: GoogleFonts.rubik(
                                 fontSize: 13,
