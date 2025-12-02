@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../config/colors.dart';
 import '../../controllers/healthy_rotten_count_controller.dart';
 import '../../controllers/mango_latest_controller.dart';
+import '../../controllers/season_controller.dart';
 import '../../widgets/custom_feature.dart';
 import '../../widgets/dashboard_card.dart';
 import '../../widgets/realtime_activity_card.dart';
@@ -23,12 +24,14 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   late final HealthyRottenCountController controller;
   late final MangoLatestController latestController;
+  late final SeasonController seasonController;
 
   @override
   void initState() {
     super.initState();
     controller = Get.put(HealthyRottenCountController());
     latestController = Get.put(MangoLatestController());
+    seasonController = Get.put(SeasonController());
   }
 
   @override
@@ -147,15 +150,20 @@ class _DashboardPageState extends State<DashboardPage> {
                                       numberFontSize: 40,
                                       label: 'Total di Proses',
                                     ),
-                                    DashboardCard(
-                                      imageAsset: 'assets/conveyor.png',
-                                      iconSize: 50,
-                                      iconColor: Colors.green,
-                                      statusDotColor: Colors.green,
-                                      number: 'Berjalan',
-                                      numberFontSize: 20,
-                                      label: 'Status Conveyor',
-                                    ),
+                                    Obx(() {
+                                      final seasonCount =
+                                          seasonController.seasonCount.value;
+
+                                      return DashboardCard(
+                                        icon: Icons.park,
+                                        iconSize: 50,
+                                        iconColor: Colors.blue,
+                                        number: '$seasonCount',
+                                        numberFontSize: 40,
+                                        numberColor: Colors.blue,
+                                        label: 'Jumlah Musim',
+                                      );
+                                    }),
                                   ];
                                   return cards[index];
                                 },

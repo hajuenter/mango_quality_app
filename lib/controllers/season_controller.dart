@@ -8,6 +8,7 @@ class SeasonController extends GetxController {
   final SeasonService _service = SeasonService();
 
   var seasonList = <SeasonModel>[].obs;
+  var seasonCount = 0.obs;
   var isLoading = true.obs;
 
   StreamSubscription<List<SeasonModel>>? _streamSubscription;
@@ -27,6 +28,7 @@ class SeasonController extends GetxController {
       (seasons) {
         seasons.sort((a, b) => b.startedAt.compareTo(a.startedAt));
         seasonList.assignAll(seasons);
+        seasonCount.value = seasons.length;
         isLoading.value = false;
       },
       onError: (e) {
@@ -44,6 +46,8 @@ class SeasonController extends GetxController {
       final seasons = await _service.fetchSeasonsOnce();
       seasons.sort((a, b) => b.startedAt.compareTo(a.startedAt));
       seasonList.assignAll(seasons);
+
+      seasonCount.value = seasons.length;
 
       final elapsed = DateTime.now().difference(start);
       final remaining = const Duration(seconds: 2) - elapsed;
